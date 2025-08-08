@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptAsk - Cryptocurrency Chatbot</title>
+    <style>
+        /* Previous styles remain the same */
+        :root {
+            --primary-color: #6c5ce7;
+            --accent-color: #4834d4;
+            --light-purple: #a29bfe;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color), var(--light-purple));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Updated logo styles */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 100%;
+        }
+
+        .logo-image {
+            width: 300px;  /* Reduced from full width */
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .logo-container h1 {
+            color: var(--white);
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+        }
+
+        .logo-container p {
+            color: var(--white);
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Rest of the previous styles remain the same */
+        .chat-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .greeting {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            background: var(--light-purple);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .option-btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            background: #f0f2ff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            background: var(--accent-color);
+        }
+
+        .crypto-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .bitcoin {
+            top: 20%;
+            left: 40px;
+            width: 200px;
+            height: 200px;
+        }
+
+        .ethereum {
+            top: 20%;
+            right: 60px;
+            width: 200px;
+            height: 200px;
+        }
+
+        .dogecoin {
+            bottom: 25%;
+            right: 40px;
+            width: 200px;
+            height: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .logo-container h1 {
+                font-size: 2rem;
+            }
+
+            .logo-image {
+                width: 200px;  /* Smaller logo for mobile */
+            }
+
+            .options {
+                flex-direction: column;
+            }
+
+            .crypto-icon {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        .messages-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding: 10px;
+        }
+
+        .message {
+            margin: 10px;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background: var(--light-purple);
+            color: var(--white);
+            margin-left: auto;
+            margin-right: 10px;
+        }
+
+        .bot-message {
+            background: #f0f2ff;
+            color: var(--accent-color);
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="logo" class="logo-image">
+            <h1>Welcome to CryptAsk!</h1>
+            <p>Your buddy to explore the world of Cryptocurrency...</p>
+        </div>
+
+        <!-- Rest of the HTML remains the same -->
+        <div class="chat-container">
+            <div class="greeting">
+                Hi there! Choose an option to start:
+            </div>
+
+            <div class="options">
+                <button class="option-btn" data-query="trending cryptocurrencies">📈 Trending Today</button>
+                <button class="option-btn" data-query="crypto basics">💰 Crypto Basics</button>
+                <button class="option-btn" data-query="what is bitcoin">₿ What is Bitcoin?</button>
+            </div>
+
+            <div class="messages-container" id="messages">
+                <!-- Messages will be dynamically added here -->
+            </div>
+
+            <div class="input-container">
+                <input type="text" class="chat-input" placeholder="Type your query..." id="userInput">
+                <button class="send-btn" id="sendButton">➤</button>
+            </div>
+        </div>
+        </div>
+        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=023" alt="Bitcoin" class="crypto-icon bitcoin">
+        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=023" alt="Ethereum" class="crypto-icon ethereum">
+        <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png?v=023" alt="Dogecoin" class="crypto-icon dogecoin">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messagesContainer = document.getElementById('messages');
+            const userInput = document.getElementById('userInput');
+            const sendButton = document.getElementById('sendButton');
+            const optionButtons = document.querySelectorAll('.option-btn');
+
+            function addMessage(message, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                messageDiv.textContent = message;
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            async function sendMessage(message) {
+                try {
+                    const response = await fetch('http://localhost:5000/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: message }),
+                    });
+
+                    const data = await response.json();
+                    addMessage(data.response);
+                } catch (error) {
+                    console.error('Error:', error);
+                    addMessage('Sorry, I encountered an error. Please try again.');
+                }
+            }
+
+            function handleSendMessage() {
+                const message = userInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    sendMessage(message);
+                    userInput.value = '';
+                }
+            }
+
+            sendButton.addEventListener('click', handleSendMessage);
+            userInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+
+            optionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const message = button.textContent.trim();
+                    const query = button.dataset.query;
+                    addMessage(message, true);
+                    sendMessage(query);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
